@@ -175,3 +175,163 @@ The components below are used as part of the deployment pipeline:
 
 Hopefully, I was able to describe in detail about the system architecture which I would use for a basic todo-list management app. This application is designed solely for training purposes and there is a lot of room for improvement. I will continue working on making the deployment more secure, HA and fault tolerant.
 This post should give you a good idea about how to design a basic full stack and fully serverless architecture for an app using the microservices patter.
+
+```java
+cd backend/main-service
+
+sam build
+```
+
+Output:
+
+```java
+Building codeuri: /mnt/volume_nyc1_01/todo-app-aws/backend/main-service/functions runtime: python3.8 metadata: {} architecture: x86_64 functions: ['getTodos', 'getTodo', 'deleteTodo', 'addTodo', 'completeTodo', 'addTodoNotes']
+Running PythonPipBuilder:ResolveDependencies
+Running PythonPipBuilder:CopySource
+
+Build Succeeded
+
+Built Artifacts  : .aws-sam/build
+Built Template   : .aws-sam/build/template.yaml
+
+Commands you can use next
+=========================
+[*] Invoke Function: sam local invoke
+[*] Test Function in the Cloud: sam sync --stack-name {stack-name} --watch
+[*] Deploy: sam deploy --guided
+
+
+SAM CLI update available (1.40.0); (1.38.1 installed)
+To download: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
+```
+
+Attempt to deploy the application to AWS:
+
+Output:
+
+```java
+
+tmc@docker-ubuntu-s-1vcpu-1gb-nyc1-01:/mnt/volume_nyc1_01/todo-app-aws/backend/main-service$ sam deploy --guided
+
+Configuring SAM deploy
+======================
+
+        Looking for config file [samconfig.toml] :  Found
+        Reading default arguments  :  Success
+
+        Setting default arguments for 'sam deploy'
+        =========================================
+        Stack Name [todo-houessou-com2]:
+        AWS Region [us-east-1]:
+        #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
+        Confirm changes before deploy [y/N]: y
+        #SAM needs permission to be able to create roles to connect to the resources in your template
+        Allow SAM CLI IAM role creation [Y/n]: y
+        #Preserves the state of previously provisioned resources when an operation fails
+        Disable rollback [y/N]: y
+        Save arguments to configuration file [Y/n]: y
+        SAM configuration file [samconfig.toml]:
+        SAM configuration environment [default]:
+
+        Looking for resources needed for deployment:
+        Creating the required resources...
+        Successfully created!
+         Managed S3 bucket: aws-sam-cli-managed-default-samclisourcebucket-1hniiozy06797
+         A different default S3 bucket can be set in samconfig.toml
+
+        Saved arguments to config file
+        Running 'sam deploy' for future deployments will use the parameters saved above.
+        The above parameters can be changed by modifying samconfig.toml
+        Learn more about samconfig.toml syntax at
+        https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+
+Uploading to todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24  9560299 / 9560299  (100.00%)
+File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+
+        Deploying with following values
+        ===============================
+        Stack name                   : todo-houessou-com2
+        Region                       : us-east-1
+        Confirm changeset            : True
+        Disable rollback             : True
+        Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-1hniiozy06797
+        Capabilities                 : ["CAPABILITY_IAM"]
+        Parameter overrides          : {}
+        Signing Profiles             : {}
+
+Initiating deployment
+=====================
+Uploading to todo-houessou-com2/12f7434d0d450a799f3b0efdf2859621.template  10867 / 10867  (100.00%)
+
+Waiting for changeset to be created..
+
+CloudFormation stack changeset
+-----------------------------------------------------------------------------------------------------------------
+Operation                    LogicalResourceId            ResourceType                 Replacement
+-----------------------------------------------------------------------------------------------------------------
++ Add                        MainHttpApidevStage          AWS::ApiGatewayV2::Stage     N/A
++ Add                        MainHttpApi                  AWS::ApiGatewayV2::Api       N/A
++ Add                        TodoTable                    AWS::DynamoDB::Table         N/A
++ Add                        TodoUserPoolClient           AWS::Cognito::UserPoolClie   N/A
+                                                          nt
++ Add                        TodoUserPoolDomain           AWS::Cognito::UserPoolDoma   N/A
+                                                          in
++ Add                        TodoUserPool                 AWS::Cognito::UserPool       N/A
++ Add                        addTodoNotesRole             AWS::IAM::Role               N/A
++ Add                        addTodoNotesaddTodoNotesAp   AWS::Lambda::Permission      N/A
+                             iPermission
++ Add                        addTodoNotes                 AWS::Lambda::Function        N/A
++ Add                        addTodoRole                  AWS::IAM::Role               N/A
++ Add                        addTodoaddTodoApiPermissio   AWS::Lambda::Permission      N/A
+                             n
++ Add                        addTodo                      AWS::Lambda::Function        N/A
++ Add                        completeTodoRole             AWS::IAM::Role               N/A
++ Add                        completeTodocompleteTodoAp   AWS::Lambda::Permission      N/A
+                             iPermission
++ Add                        completeTodo                 AWS::Lambda::Function        N/A
++ Add                        deleteTodoRole               AWS::IAM::Role               N/A
++ Add                        deleteTododeleteTodoApiPer   AWS::Lambda::Permission      N/A
+                             mission
++ Add                        deleteTodo                   AWS::Lambda::Function        N/A
++ Add                        getTodoRole                  AWS::IAM::Role               N/A
++ Add                        getTodogetTodoApiPermissio   AWS::Lambda::Permission      N/A
+                             n
++ Add                        getTodosRole                 AWS::IAM::Role               N/A
++ Add                        getTodosgetTodosApiPermiss   AWS::Lambda::Permission      N/A
+                             ion
++ Add                        getTodos                     AWS::Lambda::Function        N/A
++ Add                        getTodo                      AWS::Lambda::Function        N/A
+-----------------------------------------------------------------------------------------------------------------
+
+Changeset created successfully. arn:aws:cloudformation:us-east-1:708090526287:changeSet/samcli-deploy1646093803/e257b6ab-5685-4e42-8ae4-344d41ec2dc3
+
+
+Previewing CloudFormation changeset before deployment
+======================================================
+Deploy this changeset? [y/N]: y
+
+2022-03-01 00:17:05 - Waiting for stack create/update to complete
+
+CloudFormation events from stack operations
+-----------------------------------------------------------------------------------------------------------------
+ResourceStatus               ResourceType                 LogicalResourceId            ResourceStatusReason
+-----------------------------------------------------------------------------------------------------------------
+CREATE_FAILED                AWS::CloudFormation::Stack   todo-houessou-com2           No export named todo-
+                                                                                       houessou-com-attachments-
+                                                                                       service-TodoFilesTable
+                                                                                       found
+-----------------------------------------------------------------------------------------------------------------
+
+Failed to deploy. Automatic rollback disabled for this deployment.
+
+Actions you can take next
+=========================
+[*] Fix issues and try deploying again
+[*] Roll back stack to the last known stable state: aws cloudformation rollback-stack --stack-name todo-houessou-com2
+
+Error: Failed to create/update the stack: todo-houessou-com2, Waiter StackCreateComplete failed: Waiter encountered a terminal failure state: For expression "Stacks[].StackStatus" we matched expected path: "CREATE_FAILED" at least once
+```
