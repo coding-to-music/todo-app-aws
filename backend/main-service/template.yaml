@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "Stack for todo-houessou-com main service"
+Description: "Stack for sam-todo-app main service"
 
 Globals:
   Function:
@@ -12,17 +12,26 @@ Resources:
     DependsOn: TodoUserPool
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
       StageName: dev
       Auth:
         Authorizers:
           TodoAuthorizer:
             IdentitySource: "$request.header.Authorization"
             JwtConfiguration:
-              issuer: !Join [ '', [ 'https://cognito-idp.', '${AWS::Region}', '.amazonaws.com/', !Ref TodoUserPool ] ] 
-              audience: 
-                - !Ref TodoUserPoolClient 
+              issuer:
+                !Join [
+                  "",
+                  [
+                    "https://cognito-idp.",
+                    "${AWS::Region}",
+                    ".amazonaws.com/",
+                    !Ref TodoUserPool,
+                  ],
+                ]
+              audience:
+                - !Ref TodoUserPoolClient
         DefaultAuthorizer: TodoAuthorizer
       CorsConfiguration:
         AllowMethods:
@@ -32,18 +41,17 @@ Resources:
         AllowOrigins:
           - https://todo.houessou.com
         AllowHeaders:
-          - '*'
-           
-                     
+          - "*"
+
   getTodos:
     Type: AWS::Serverless::Function
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
-      Environment: 
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
+      Environment:
         Variables:
-          TODO_TABLE: !Ref TodoTable 
+          TODO_TABLE: !Ref TodoTable
       CodeUri: ./functions
       Handler: getTodos.lambda_handler
       Events:
@@ -57,20 +65,20 @@ Resources:
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow
-              Action: 'dynamodb:*'
+              Action: "dynamodb:*"
               Resource:
-                - !GetAtt 'TodoTable.Arn'
-                - !Join [ '', [ !GetAtt 'TodoTable.Arn', '/index/*' ] ]  
-                   
+                - !GetAtt "TodoTable.Arn"
+                - !Join ["", [!GetAtt "TodoTable.Arn", "/index/*"]]
+
   getTodo:
     Type: AWS::Serverless::Function
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
-      Environment: 
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
+      Environment:
         Variables:
-          TODO_TABLE: !Ref TodoTable 
+          TODO_TABLE: !Ref TodoTable
       CodeUri: ./functions
       Handler: getTodo.lambda_handler
       Events:
@@ -84,21 +92,21 @@ Resources:
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow
-              Action: 'dynamodb:*'
+              Action: "dynamodb:*"
               Resource:
-                - !GetAtt 'TodoTable.Arn'
-  
+                - !GetAtt "TodoTable.Arn"
+
   deleteTodo:
     Type: AWS::Serverless::Function
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
-      Environment: 
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
+      Environment:
         Variables:
-          TODO_TABLE: !Ref TodoTable 
-          TODOFILES_BUCKET: !ImportValue "todo-houessou-com-attachments-service-TodoFilesBucket"
-          TODOFILES_TABLE: !ImportValue "todo-houessou-com-attachments-service-TodoFilesTable"
+          TODO_TABLE: !Ref TodoTable
+          TODOFILES_BUCKET: !ImportValue "sam-todo-app-attachments-service-TodoFilesBucket"
+          TODOFILES_TABLE: !ImportValue "sam-todo-app-attachments-service-TodoFilesTable"
       CodeUri: ./functions
       Handler: deleteTodo.lambda_handler
       Events:
@@ -112,28 +120,40 @@ Resources:
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow
-              Action: 
-                - 'dynamodb:*'
-                - 's3:PutObject'
-                - 's3:GetObject'
-                - 's3:DeleteObject'
-                - 's3:ListBucket'
+              Action:
+                - "dynamodb:*"
+                - "s3:PutObject"
+                - "s3:GetObject"
+                - "s3:DeleteObject"
+                - "s3:ListBucket"
               Resource:
-                - !GetAtt 'TodoTable.Arn'
-                - !ImportValue 'todo-houessou-com-attachments-service-TodoFilesTableArn'
-                - !Join [ '', [ !ImportValue 'todo-houessou-com-attachments-service-TodoFilesTableArn', '/index/*' ] ]
-                - !ImportValue 'todo-houessou-com-attachments-service-TodoFilesBucketArn'
-                - !Join ['', [!ImportValue 'todo-houessou-com-attachments-service-TodoFilesBucketArn', '/*']]
+                - !GetAtt "TodoTable.Arn"
+                - !ImportValue "sam-todo-app-attachments-service-TodoFilesTableArn"
+                - !Join [
+                    "",
+                    [
+                      !ImportValue "sam-todo-app-attachments-service-TodoFilesTableArn",
+                      "/index/*",
+                    ],
+                  ]
+                - !ImportValue "sam-todo-app-attachments-service-TodoFilesBucketArn"
+                - !Join [
+                    "",
+                    [
+                      !ImportValue "sam-todo-app-attachments-service-TodoFilesBucketArn",
+                      "/*",
+                    ],
+                  ]
 
   addTodo:
     Type: AWS::Serverless::Function
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
-      Environment: 
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
+      Environment:
         Variables:
-          TODO_TABLE: !Ref TodoTable 
+          TODO_TABLE: !Ref TodoTable
       CodeUri: ./functions
       Handler: addTodo.lambda_handler
       Events:
@@ -147,19 +167,19 @@ Resources:
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow
-              Action: 'dynamodb:*'
+              Action: "dynamodb:*"
               Resource:
-                - !GetAtt 'TodoTable.Arn'
-  
+                - !GetAtt "TodoTable.Arn"
+
   completeTodo:
     Type: AWS::Serverless::Function
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
-      Environment: 
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
+      Environment:
         Variables:
-          TODO_TABLE: !Ref TodoTable 
+          TODO_TABLE: !Ref TodoTable
       CodeUri: ./functions
       Handler: completeTodo.lambda_handler
       Events:
@@ -173,19 +193,19 @@ Resources:
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow
-              Action: 'dynamodb:*'
+              Action: "dynamodb:*"
               Resource:
-                - !GetAtt 'TodoTable.Arn'
+                - !GetAtt "TodoTable.Arn"
 
   addTodoNotes:
     Type: AWS::Serverless::Function
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
-      Environment: 
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
+      Environment:
         Variables:
-          TODO_TABLE: !Ref TodoTable 
+          TODO_TABLE: !Ref TodoTable
       CodeUri: ./functions
       Handler: addTodoNotes.lambda_handler
       Events:
@@ -199,79 +219,78 @@ Resources:
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow
-              Action: 'dynamodb:*'
+              Action: "dynamodb:*"
               Resource:
-                - !GetAtt 'TodoTable.Arn'
-
+                - !GetAtt "TodoTable.Arn"
 
   TodoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
-      UserPoolName: !Sub 'UserPool-${AWS::StackName}'
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
+      UserPoolName: !Sub "UserPool-${AWS::StackName}"
       UsernameAttributes:
         - email
       AutoVerifiedAttributes:
         - email
-  
+
   TodoUserPoolClient:
-      Type: AWS::Cognito::UserPoolClient
-      Properties:
-        Tags:
-          - Key: resource-group
-            Value: todo-houessou-com
-          - Key: resource-group-child
-            Value: todo-houessou-com-main-service
-        ClientName: !Sub 'UserPoolClient-${AWS::StackName}'
-        AllowedOAuthFlows:
-          - implicit
-        AllowedOAuthFlowsUserPoolClient: true
-        AllowedOAuthScopes:
-          - phone
-          - email
-          - openid
-          - profile
-          - aws.cognito.signin.user.admin
-        UserPoolId:
-          Ref: TodoUserPool
-        CallbackURLs: 
-          - https://todo.houessou.com
-        ExplicitAuthFlows:
-          - ALLOW_USER_SRP_AUTH
-          - ALLOW_REFRESH_TOKEN_AUTH
-        GenerateSecret: false
-        SupportedIdentityProviders: 
-          - COGNITO
-  # Cognito user pool domain
-  TodoUserPoolDomain:
-    Type: AWS::Cognito::UserPoolDomain 
+    Type: AWS::Cognito::UserPoolClient
     Properties:
       Tags:
-        resource-group: todo-houessou-com
-        resource-group-child: todo-houessou-com-main-service
+        - Key: resource-group
+          Value: sam-todo-app
+        - Key: resource-group-child
+          Value: sam-todo-app-main-service
+      ClientName: !Sub "UserPoolClient-${AWS::StackName}"
+      AllowedOAuthFlows:
+        - implicit
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - profile
+        - aws.cognito.signin.user.admin
+      UserPoolId:
+        Ref: TodoUserPool
+      CallbackURLs:
+        - https://todo.houessou.com
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: false
+      SupportedIdentityProviders:
+        - COGNITO
+  # Cognito user pool domain
+  TodoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Tags:
+        resource-group: sam-todo-app
+        resource-group-child: sam-todo-app-main-service
       UserPoolId: !Ref TodoUserPool
-      Domain: auth-todo-houessou-com
-  
- # dynamoDB table to store todos
+      Domain: auth-sam-todo-app
+
+  # dynamoDB table to store todos
   TodoTable:
     Type: AWS::DynamoDB::Table
     Properties:
       Tags:
-        - resource-group: todo-houessou-com
-        - resource-group-child: todo-houessou-com-main-service
-      TableName: !Sub 'TodoTable-${AWS::StackName}'
+        - resource-group: sam-todo-app
+        - resource-group-child: sam-todo-app-main-service
+      TableName: !Sub "TodoTable-${AWS::StackName}"
       BillingMode: PROVISIONED
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
-      AttributeDefinitions: 
+      AttributeDefinitions:
         - AttributeName: "todoID"
           AttributeType: "S"
         - AttributeName: "userID"
           AttributeType: "S"
-      KeySchema: 
+      KeySchema:
         - AttributeName: "todoID"
           KeyType: "HASH"
       GlobalSecondaryIndexes:
@@ -281,16 +300,23 @@ Resources:
               KeyType: "HASH"
             - AttributeName: "todoID"
               KeyType: "RANGE"
-          Projection: 
+          Projection:
             ProjectionType: "ALL"
           ProvisionedThroughput:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1
-      
 
 Outputs:
   MainHttpApi:
-    Value: !Join [ '', ['https://', !Ref MainHttpApi, '.execute-api.us-east-1.amazonaws.com/dev'] ]
+    Value:
+      !Join [
+        "",
+        [
+          "https://",
+          !Ref MainHttpApi,
+          ".execute-api.us-east-1.amazonaws.com/dev",
+        ],
+      ]
     Export:
       Name: !Sub "${AWS::StackName}-MainHttpApiURL"
   TodoUserPool:
@@ -298,7 +324,7 @@ Outputs:
     Export:
       Name: !Sub "${AWS::StackName}-TodoUserPool"
   TodoUserPoolArn:
-    Value: !GetAtt 'TodoUserPool.Arn'
+    Value: !GetAtt "TodoUserPool.Arn"
     Export:
       Name: !Sub "${AWS::StackName}-TodoUserPoolArn"
   TodoUserPoolClient:
@@ -306,12 +332,12 @@ Outputs:
     Export:
       Name: !Sub "${AWS::StackName}-TodoUserPoolClient"
   TodoTable:
-    Value: !Ref TodoTable 
+    Value: !Ref TodoTable
     Export:
       Name: !Sub "${AWS::StackName}-TodoTable"
   TodoTableArn:
-    Value: !GetAtt 'TodoTable.Arn' 
+    Value: !GetAtt "TodoTable.Arn"
     Export:
       Name: !Sub "${AWS::StackName}-TodoTableArn"
-  StackName: 
+  StackName:
     Value: !Sub "${AWS::StackName}"

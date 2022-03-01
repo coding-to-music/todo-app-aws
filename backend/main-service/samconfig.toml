@@ -2,15 +2,11 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "todo-houessou-com2"
+stack_name = "sam-todo-app"
+s3_prefix = "sam-todo-app"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1hniiozy06797"
-s3_prefix = "todo-houessou-com2"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
-
-# stack_name = "todo-houessou-com"
-# s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1m8qnzobarz4q"
 confirm_changeset = true
 disable_rollback = true
 image_repositories = []
-# s3_prefix = "todo-houessou-com"

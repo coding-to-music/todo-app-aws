@@ -176,6 +176,28 @@ The components below are used as part of the deployment pipeline:
 Hopefully, I was able to describe in detail about the system architecture which I would use for a basic todo-list management app. This application is designed solely for training purposes and there is a lot of room for improvement. I will continue working on making the deployment more secure, HA and fault tolerant.
 This post should give you a good idea about how to design a basic full stack and fully serverless architecture for an app using the microservices patter.
 
+# My Changes
+
+### search and replace the following:
+
+backend/attachments-service/samconfig.toml
+
+```java
+stack_name = "sam-todo-app"
+s3_prefix = "sam-todo-app"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1hniiozy06797"
+```
+
+backend/main-service/samconfig.toml
+
+```java
+stack_name = "sam-todo-app"
+s3_prefix = "sam-todo-app"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1hniiozy06797"
+```
+
+Manually created the following S3 buckets:
+
 ```java
 cd backend/main-service
 
@@ -221,7 +243,7 @@ Configuring SAM deploy
 
         Setting default arguments for 'sam deploy'
         =========================================
-        Stack Name [todo-houessou-com2]:
+        Stack Name [sam-todo-app2]:
         AWS Region [us-east-1]:
         #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
         Confirm changes before deploy [y/N]: y
@@ -245,16 +267,48 @@ Configuring SAM deploy
         Learn more about samconfig.toml syntax at
         https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
 
-Uploading to todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24  9560299 / 9560299  (100.00%)
-File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
-File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
-File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
-File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
-File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+Uploading to sam-todo-app2/47902f40ff47f9f7366d5ac33da53d24  9560299 / 9560299  (100.00%)
+File with same data already exists at sam-todo-app2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app2/47902f40ff47f9f7366d5ac33da53d24, skipping upload
 
         Deploying with following values
         ===============================
-        Stack name                   : todo-houessou-com2
+        Stack name                   : sam-todo-app2
+        Region                       : us-east-1
+        Confirm changeset            : True
+        Disable rollback             : True
+        Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-1hniiozy06797
+        Capabilities                 : ["CAPABILITY_IAM"]
+        Parameter overrides          : {}
+        Signing Profiles             : {}
+```
+
+### Subsequent builds
+
+```java
+cd backend/main-service
+
+sam build
+
+sam deploy
+```
+
+Output:
+
+```java
+File with same data already exists at sam-todo-app/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+File with same data already exists at sam-todo-app/47902f40ff47f9f7366d5ac33da53d24, skipping upload
+
+        Deploying with following values
+        ===============================
+        Stack name                   : sam-todo-app
         Region                       : us-east-1
         Confirm changeset            : True
         Disable rollback             : True
@@ -265,73 +319,148 @@ File with same data already exists at todo-houessou-com2/47902f40ff47f9f7366d5ac
 
 Initiating deployment
 =====================
-Uploading to todo-houessou-com2/12f7434d0d450a799f3b0efdf2859621.template  10867 / 10867  (100.00%)
+File with same data already exists at sam-todo-app/ed387b0da5a7d1ff31828f7a4cf02329.template, skipping upload
 
 Waiting for changeset to be created..
 
 CloudFormation stack changeset
------------------------------------------------------------------------------------------------------------------
-Operation                    LogicalResourceId            ResourceType                 Replacement
------------------------------------------------------------------------------------------------------------------
-+ Add                        MainHttpApidevStage          AWS::ApiGatewayV2::Stage     N/A
-+ Add                        MainHttpApi                  AWS::ApiGatewayV2::Api       N/A
-+ Add                        TodoTable                    AWS::DynamoDB::Table         N/A
-+ Add                        TodoUserPoolClient           AWS::Cognito::UserPoolClie   N/A
-                                                          nt
-+ Add                        TodoUserPoolDomain           AWS::Cognito::UserPoolDoma   N/A
-                                                          in
-+ Add                        TodoUserPool                 AWS::Cognito::UserPool       N/A
-+ Add                        addTodoNotesRole             AWS::IAM::Role               N/A
-+ Add                        addTodoNotesaddTodoNotesAp   AWS::Lambda::Permission      N/A
-                             iPermission
-+ Add                        addTodoNotes                 AWS::Lambda::Function        N/A
-+ Add                        addTodoRole                  AWS::IAM::Role               N/A
-+ Add                        addTodoaddTodoApiPermissio   AWS::Lambda::Permission      N/A
-                             n
-+ Add                        addTodo                      AWS::Lambda::Function        N/A
-+ Add                        completeTodoRole             AWS::IAM::Role               N/A
-+ Add                        completeTodocompleteTodoAp   AWS::Lambda::Permission      N/A
-                             iPermission
-+ Add                        completeTodo                 AWS::Lambda::Function        N/A
-+ Add                        deleteTodoRole               AWS::IAM::Role               N/A
-+ Add                        deleteTododeleteTodoApiPer   AWS::Lambda::Permission      N/A
-                             mission
-+ Add                        deleteTodo                   AWS::Lambda::Function        N/A
-+ Add                        getTodoRole                  AWS::IAM::Role               N/A
-+ Add                        getTodogetTodoApiPermissio   AWS::Lambda::Permission      N/A
-                             n
-+ Add                        getTodosRole                 AWS::IAM::Role               N/A
-+ Add                        getTodosgetTodosApiPermiss   AWS::Lambda::Permission      N/A
-                             ion
-+ Add                        getTodos                     AWS::Lambda::Function        N/A
-+ Add                        getTodo                      AWS::Lambda::Function        N/A
------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Operation                                                     LogicalResourceId                                             ResourceType                                                  Replacement
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
++ Add                                                         MainHttpApidevStage                                           AWS::ApiGatewayV2::Stage                                      N/A
++ Add                                                         MainHttpApi                                                   AWS::ApiGatewayV2::Api                                        N/A
++ Add                                                         TodoTable                                                     AWS::DynamoDB::Table                                          N/A
++ Add                                                         TodoUserPoolClient                                            AWS::Cognito::UserPoolClient                                  N/A
++ Add                                                         TodoUserPoolDomain                                            AWS::Cognito::UserPoolDomain                                  N/A
++ Add                                                         TodoUserPool                                                  AWS::Cognito::UserPool                                        N/A
++ Add                                                         addTodoNotesRole                                              AWS::IAM::Role                                                N/A
++ Add                                                         addTodoNotesaddTodoNotesApiPermission                         AWS::Lambda::Permission                                       N/A
++ Add                                                         addTodoNotes                                                  AWS::Lambda::Function                                         N/A
++ Add                                                         addTodoRole                                                   AWS::IAM::Role                                                N/A
++ Add                                                         addTodoaddTodoApiPermission                                   AWS::Lambda::Permission                                       N/A
++ Add                                                         addTodo                                                       AWS::Lambda::Function                                         N/A
++ Add                                                         completeTodoRole                                              AWS::IAM::Role                                                N/A
++ Add                                                         completeTodocompleteTodoApiPermission                         AWS::Lambda::Permission                                       N/A
++ Add                                                         completeTodo                                                  AWS::Lambda::Function                                         N/A
++ Add                                                         deleteTodoRole                                                AWS::IAM::Role                                                N/A
++ Add                                                         deleteTododeleteTodoApiPermission                             AWS::Lambda::Permission                                       N/A
++ Add                                                         deleteTodo                                                    AWS::Lambda::Function                                         N/A
++ Add                                                         getTodoRole                                                   AWS::IAM::Role                                                N/A
++ Add                                                         getTodogetTodoApiPermission                                   AWS::Lambda::Permission                                       N/A
++ Add                                                         getTodosRole                                                  AWS::IAM::Role                                                N/A
++ Add                                                         getTodosgetTodosApiPermission                                 AWS::Lambda::Permission                                       N/A
++ Add                                                         getTodos                                                      AWS::Lambda::Function                                         N/A
++ Add                                                         getTodo                                                       AWS::Lambda::Function                                         N/A
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Changeset created successfully. arn:aws:cloudformation:us-east-1:708090526287:changeSet/samcli-deploy1646093803/e257b6ab-5685-4e42-8ae4-344d41ec2dc3
+Changeset created successfully. arn:aws:cloudformation:us-east-1:708090526287:changeSet/samcli-deploy1646117504/9da03b0f-3b24-4ff4-98dd-64f9c7f5209a
 
 
 Previewing CloudFormation changeset before deployment
 ======================================================
 Deploy this changeset? [y/N]: y
 
-2022-03-01 00:17:05 - Waiting for stack create/update to complete
+2022-03-01 06:52:01 - Waiting for stack create/update to complete
 
 CloudFormation events from stack operations
------------------------------------------------------------------------------------------------------------------
-ResourceStatus               ResourceType                 LogicalResourceId            ResourceStatusReason
------------------------------------------------------------------------------------------------------------------
-CREATE_FAILED                AWS::CloudFormation::Stack   todo-houessou-com2           No export named todo-
-                                                                                       houessou-com-attachments-
-                                                                                       service-TodoFilesTable
-                                                                                       found
------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ResourceStatus                                                ResourceType                                                  LogicalResourceId                                             ResourceStatusReason
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UPDATE_IN_PROGRESS                                            AWS::CloudFormation::Stack                                    sam-todo-app                                                  No export named sam-todo-app-attachments-service-
+                                                                                                                                                                                          TodoFilesTable found
+UPDATE_FAILED                                                 AWS::CloudFormation::Stack                                    sam-todo-app                                                  -
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Failed to deploy. Automatic rollback disabled for this deployment.
 
 Actions you can take next
 =========================
 [*] Fix issues and try deploying again
-[*] Roll back stack to the last known stable state: aws cloudformation rollback-stack --stack-name todo-houessou-com2
+[*] Roll back stack to the last known stable state: aws cloudformation rollback-stack --stack-name sam-todo-app
 
-Error: Failed to create/update the stack: todo-houessou-com2, Waiter StackCreateComplete failed: Waiter encountered a terminal failure state: For expression "Stacks[].StackStatus" we matched expected path: "CREATE_FAILED" at least once
+Error: Failed to create/update the stack: sam-todo-app, Waiter StackUpdateComplete failed: Waiter encountered a terminal failure state: For expression "Stacks[].StackStatus" we matched expected path: "UPDATE_FAILED" at least once
+```
+
+### deploy backend/attachments-service
+
+```java
+cd backend/attachments-service
+
+sam build
+
+sam deploy
+```
+
+```java
+File with same data already exists at sam-todo-app-attachments-service/d969942f2e70a500abb42539c0bcb71f, skipping upload
+File with same data already exists at sam-todo-app-attachments-service/d969942f2e70a500abb42539c0bcb71f, skipping upload
+File with same data already exists at sam-todo-app-attachments-service/d969942f2e70a500abb42539c0bcb71f, skipping upload
+
+        Deploying with following values
+        ===============================
+        Stack name                   : sam-todo-app-attachments-service
+        Region                       : us-east-1
+        Confirm changeset            : True
+        Disable rollback             : True
+        Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-1hniiozy06797
+        Capabilities                 : ["CAPABILITY_NAMED_IAM"]
+        Parameter overrides          : {}
+        Signing Profiles             : {}
+
+Initiating deployment
+=====================
+File with same data already exists at sam-todo-app-attachments-service/8da6c9971a7febe82079d940b670e41c.template, skipping upload
+
+Waiting for changeset to be created..
+
+CloudFormation stack changeset
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Operation                                                     LogicalResourceId                                             ResourceType                                                  Replacement
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
++ Add                                                         FilesApidevStage                                              AWS::ApiGatewayV2::Stage                                      N/A
++ Add                                                         FilesApi                                                      AWS::ApiGatewayV2::Api                                        N/A
++ Add                                                         TodoFilesBucketCF                                             AWS::CloudFront::Distribution                                 N/A
++ Add                                                         TodoFilesBucketOAI                                            AWS::CloudFront::CloudFrontOriginAccessIdentity               N/A
++ Add                                                         TodoFilesBucketPolicy                                         AWS::S3::BucketPolicy                                         N/A
++ Add                                                         TodoFilesBucket                                               AWS::S3::Bucket                                               N/A
++ Add                                                         TodoFilesTable                                                AWS::DynamoDB::Table                                          N/A
++ Add                                                         TodoIdentityPoolRoleAttachment                                AWS::Cognito::IdentityPoolRoleAttachment                      N/A
++ Add                                                         TodoIdentityPoolRole                                          AWS::IAM::Role                                                N/A
++ Add                                                         TodoIdentityPool                                              AWS::Cognito::IdentityPool                                    N/A
++ Add                                                         addTodoFilesRole                                              AWS::IAM::Role                                                N/A
++ Add                                                         addTodoFilesaddTodoApiPermission                              AWS::Lambda::Permission                                       N/A
++ Add                                                         addTodoFiles                                                  AWS::Lambda::Function                                         N/A
++ Add                                                         deleteTodoFileRole                                            AWS::IAM::Role                                                N/A
++ Add                                                         deleteTodoFiledeleteTodoApiPermission                         AWS::Lambda::Permission                                       N/A
++ Add                                                         deleteTodoFile                                                AWS::Lambda::Function                                         N/A
++ Add                                                         getTodoFilesRole                                              AWS::IAM::Role                                                N/A
++ Add                                                         getTodoFilesgetFilesApiPermission                             AWS::Lambda::Permission                                       N/A
++ Add                                                         getTodoFiles                                                  AWS::Lambda::Function                                         N/A
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Changeset created successfully. arn:aws:cloudformation:us-east-1:708090526287:changeSet/samcli-deploy1646117576/50095e45-e0c2-4c07-b47b-878d19387511
+
+
+Previewing CloudFormation changeset before deployment
+======================================================
+Deploy this changeset? [y/N]: y
+
+2022-03-01 06:53:11 - Waiting for stack create/update to complete
+
+CloudFormation events from stack operations
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ResourceStatus                                                ResourceType                                                  LogicalResourceId                                             ResourceStatusReason
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UPDATE_IN_PROGRESS                                            AWS::CloudFormation::Stack                                    sam-todo-app-attachments-service                              No export named sam-todo-app-TodoUserPoolClient found
+UPDATE_FAILED                                                 AWS::CloudFormation::Stack                                    sam-todo-app-attachments-service                              -
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Failed to deploy. Automatic rollback disabled for this deployment.
+
+Actions you can take next
+=========================
+[*] Fix issues and try deploying again
+[*] Roll back stack to the last known stable state: aws cloudformation rollback-stack --stack-name sam-todo-app-attachments-service
+
+Error: Failed to create/update the stack: sam-todo-app-attachments-service, Waiter StackUpdateComplete failed: Waiter encountered a terminal failure state: For expression "Stacks[].StackStatus" we matched expected path: "UPDATE_FAILED" at least once
 ```
